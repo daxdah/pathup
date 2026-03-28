@@ -271,7 +271,7 @@ export async function generateReport<T extends ReportType>(
 
   if (isMock) {
     console.log(`[AI] Mock mode — returning mock ${type} report`)
-    return getMockReport(type, profile) as ReportResult<T>
+    return getMockReport(type as any, profile) as ReportResult<T>
   }
 
   // --- REAL MODE ---
@@ -282,7 +282,7 @@ export async function generateReport<T extends ReportType>(
   const userContent = [reportPrompt, inputPayload].filter(Boolean).join("\n\n")
 
   // Model selection: free report → cheap, full/parent → quality
-  const model = "gpt-4o-mini"
+  const model = type === "free" ? "gpt-4o-mini" : "gpt-4o"
 
   let raw: string
 
@@ -294,7 +294,7 @@ export async function generateReport<T extends ReportType>(
         { role: "user", content: userContent },
       ],
       temperature: 0.4,
-      max_tokens: type === "free" ? 1500 : 4000,
+      max_tokens: type === "free" ? 1000 : 2500,
       response_format: { type: "json_object" },
     } as any)
   } catch (err) {
