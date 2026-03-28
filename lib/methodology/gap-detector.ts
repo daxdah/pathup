@@ -7,12 +7,12 @@
 import type { GapType, StructuredProfile } from "@/types"
 
 interface GapResult {
-  gaps: GapType[]
-  primary_gap: GapType
+  gaps: string[]
+  primary_gap: string
 }
 
 interface GapRule {
-  gap: GapType
+  gap: string
   priority: number                          // меньше = важнее
   condition: (p: StructuredProfile) => boolean
   label: string
