@@ -76,7 +76,7 @@ export const GAP_RULES: GapRule[] = [
   {
     // FIX 3: новый gap G13_no_community
     // Ловит блокер no_community — частый и важный, но раньше не адресовался
-    gap: "G13_no_community",
+    gap: "G13_no_community" as GapType,
     priority: 6.5,
     label: "Нет людей в теме",
     condition: (p) =>
