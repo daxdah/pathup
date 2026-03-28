@@ -1,0 +1,158 @@
+// =============================================================================
+// PathUp — Prisma Schema
+// PostgreSQL via Supabase
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// -----------------------------------------------------------------------------
+// Sessions — основная таблица
+// Каждая сессия = один пользователь прошедший анкету
+// -----------------------------------------------------------------------------
+
+model Session {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Raw questionnaire input
+  questionnaire Json
+
+  // Processed by methodology engine
+  profile  Json
+  decision Json
+
+  // LLM-generated reports
+  free_report  Json?
+  full_report  Json?
+  parent_report Json?
+
+  // Report generation status
+  free_report_status  String @default("pending") // pending|generating|done|failed
+  full_report_status  String @default("pending")
+
+  // Payment
+  is_paid    Boolean   @default(false)
+  paid_at    DateTime?
+  payment_id String?
+  email      String?
+
+  // Denormalized for fast queries / analytics
+  archetype    String?
+  primary_gap  String?
+  primary_path String?
+  grade        Int?
+
+  // Follow-up emails
+  checkin_7d_sent   Boolean @default(false)
+  checkin_7d_done   Boolean @default(false)
+  checkin_7d_result Json?
+  checkin_30d_sent  Boolean @default(false)
+  checkin_30d_done  Boolean @default(false)
+  checkin_90d_sent  Boolean @default(false)
+
+  // Relations
+  events Event[]
+
+  @@index([created_at])
+  @@index([is_paid])
+  @@index([archetype])
+  @@index([is_paid, checkin_7d_sent, created_at])
+}
+
+// -----------------------------------------------------------------------------
+// Events — analytics
+// -----------------------------------------------------------------------------
+
+model Event {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+
+  session_id String?
+  session    Session? @relation(fields: [session_id], references: [id], onDelete: SetNull)
+
+  event      String
+  properties Json?
+
+  @@index([event])
+  @@index([session_id])
+  @@index([created_at])
+}
+
+// -----------------------------------------------------------------------------
+// Resources — статический контент для LLM
+// Редактируется вручную или через admin
+// -----------------------------------------------------------------------------
+
+model Resource {
+  id          String   @id @default(uuid())
+  created_at  DateTime @default(now())
+
+  title       String
+  url         String?
+  type        String   // course|book|community|tool|person
+  paths       String[] // ['P1_skill_sprint', ...]
+  archetypes  String[] // ['Builder', ...]
+  description String?
+  is_active   Boolean  @default(true)
+
+  @@index([is_active])
+}
+
+// -----------------------------------------------------------------------------
+// Config — key-value для настроек приложения
+// -----------------------------------------------------------------------------
+
+model Config {
+  key       String   @id
+  value     Json
+  updated_at DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// Feedback — отзывы пользователей после полного отчёта
+// Table-friendly структура для удобного анализа в таблицах
+// -----------------------------------------------------------------------------
+
+model Feedback {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+
+  // Связь с сессией (optional — пользователь мог не иметь session)
+  session_id String?
+  report_id  String?
+
+  // Основные поля оценки
+  score_relevance  Int     // 1–10: насколько отчёт был "про тебя"
+  most_useful      String  // что было самым полезным
+  most_weak        String  // что было шаблонным или слабым
+  confusing        String  // что было непонятно или лишнее
+  missing          String  // чего ожидал но не увидел
+
+  // Рекомендация
+  would_recommend  Boolean // посоветовал бы друзьям
+
+  // Разрешение на публикацию
+  allow_public     Boolean @default(false)
+
+  // Опционально
+  telegram         String? // @username если хочет оставить
+
+  // Метаданные для аналитики
+  archetype        String? // из сессии
+  primary_gap      String? // из сессии
+  grade            Int?    // из сессии
+
+  @@index([created_at])
+  @@index([score_relevance])
+  @@index([would_recommend])
+  @@index([allow_public])
+}

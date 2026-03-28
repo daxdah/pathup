@@ -1,0 +1,91 @@
+{
+  "_comment": "Example: Free Report for Anxious profile (Катя, 9 класс)",
+
+  "INPUT": {
+    "profile": {
+      "grade": 9,
+      "interest_areas": ["design", "arts"],
+      "interest_count": 2,
+      "interest_confidence": "medium",
+      "primary_interest": "design",
+      "has_current_project": true,
+      "has_public_work": false,
+      "projects_completed_last_90d": 1,
+      "completion_rate": "medium",
+      "recent_activities": ["design", "learning"],
+      "goal_type": "direction",
+      "goal_horizon": "long_term",
+      "goal_specificity": "vague",
+      "hours_per_week_number": 3,
+      "blockers": ["fear_of_failure", "no_community"],
+      "primary_blocker": "fear_of_failure",
+      "decision_style": "analytical_stuck",
+      "pressure_source": "parents",
+      "feedback_comfort": "prefer_not",
+      "feedback_comfort_level": "low",
+      "archetype": "Anxious",
+      "archetype_confidence": "high",
+      "detected_gaps": ["G8_confidence_gap", "G7_external_pressure", "G4_no_feedback_loop", "G13_no_community"],
+      "primary_gap": "G8_confidence_gap",
+      "one_step_today": "Выложить старый набросок в закрытый альбом"
+    },
+    "decision": {
+      "archetype": "Anxious",
+      "primary_gap": "G8_confidence_gap",
+      "recommended_paths": ["P7_mindset_reset", "P3_exploration_sprint"],
+      "primary_path": "P7_mindset_reset",
+      "plan_7d": [
+        {
+          "action_id": "ACT_001",
+          "label": "Дописать дизайн-проект до рабочего состояния",
+          "description": "Открыть незавершённый проект. Убрать всё что не готово. Цель — «работает», а не «идеально».",
+          "duration_minutes": 60,
+          "is_public": false,
+          "day_target": 2,
+          "resolves_gap": "G3_no_completion"
+        },
+        {
+          "action_id": "ACT_002",
+          "label": "Показать проект одному человеку — другу или однокласснику",
+          "description": "Не выкладывать публично. Показать одному знакомому и записать одну вещь которую он сказал.",
+          "duration_minutes": 30,
+          "is_public": false,
+          "day_target": 4,
+          "resolves_gap": "G8_confidence_gap"
+        }
+      ]
+    }
+  },
+
+  "EXPECTED_OUTPUT": {
+    "archetype_label": "Делает, но не показывает",
+    "archetype_description": "Ты работаешь — рисуешь, думаешь, доводишь до какого-то состояния. Но всё остаётся у тебя: в папках, в черновиках, в голове. Не потому что плохо — а потому что кажется что ещё чуть-чуть и будет готово. Этот «чуть-чуть» может тянуться очень долго.",
+    "primary_gap_label": "Страх первого публичного шага",
+    "primary_gap_description": "Ты заканчиваешь работы, но не показываешь их — они лежат на компьютере. Это не скромность. Это паттерн: сделать → спрятать → начать следующее.",
+    "top_path_label": "Разблокировка через маленькие шаги",
+    "top_path_teaser": "Не новый курс и не амбициозный план — серия маленьких завершённых шагов которые делают показ работ нормальным, а не страшным.",
+    "plan_7d_preview": [
+      {
+        "action_id": "ACT_001",
+        "label": "Дописать дизайн-проект до рабочего состояния",
+        "description": "Открыть незавершённый проект. Убрать всё что не готово. Цель — «работает», а не «идеально».",
+        "duration_minutes": 60,
+        "is_public": false,
+        "day_target": 2,
+        "resolves_gap": "G3_no_completion"
+      },
+      {
+        "action_id": "ACT_002",
+        "label": "Показать проект одному человеку — другу или однокласснику",
+        "description": "Не выкладывать публично. Показать одному знакомому и записать одну вещь которую он сказал.",
+        "duration_minutes": 30,
+        "is_public": false,
+        "day_target": 4,
+        "resolves_gap": "G8_confidence_gap"
+      }
+    ],
+    "plan_30d_locked": true,
+    "plan_90d_locked": true,
+    "upgrade_prompt": "У тебя есть незавершённый дизайн-проект и 3 часа в неделю. Полный план показывает что делать в каждую из 4 недель — конкретно, с учётом того что показывать работы пока страшно. Первый шаг там — без публичности."
+  }
+}
