@@ -42,7 +42,7 @@ export default async function FreeReportPage({ params }: Props) {
   }
 
   // Report failed — show error with retry option
-  if (session.free_report_status === "failed" || !session.free_report) {
+  if ((session.free_report_status as string) === "failed" || !session.free_report) {
     return <ReportError session_id={sid} />
   }
 
