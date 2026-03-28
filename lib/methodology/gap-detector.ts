@@ -25,13 +25,16 @@ interface GapRule {
 
 export const GAP_RULES: GapRule[] = [
   {
+    // FIX 1: расширено условие — ловит "много интересов, ни одного серьёзного"
+    // Было: interest_count === 0 (только полное отсутствие интересов)
+    // Стало: также срабатывает когда много интересов + низкая уверенность + ничего не делает
     gap: "G1_no_direction",
     priority: 1,
     label: "Нет направления",
     condition: (p) =>
       p.interest_confidence === "low" &&
       p.goal_specificity === "vague" &&
-      p.interest_count === 0,
+      (p.interest_count === 0 || p.completion_rate === "low"),
   },
   {
     gap: "G8_confidence_gap",
@@ -48,12 +51,15 @@ export const GAP_RULES: GapRule[] = [
     condition: (p) => p.hours_per_week_number < 3,
   },
   {
+    // FIX 2: убрана зависимость от decision_style
+    // Было: только waits_for_others | follows_peers (Rebel не попадал)
+    // Стало: любой пользователь с давлением родителей и нечёткой целью
     gap: "G7_external_pressure",
     priority: 4,
     label: "Внешнее давление",
     condition: (p) =>
       p.pressure_source === "parents" &&
-      (p.decision_style === "waits_for_others" || p.decision_style === "follows_peers"),
+      p.goal_specificity !== "specific",
   },
   {
     gap: "G3_no_completion",
@@ -66,6 +72,16 @@ export const GAP_RULES: GapRule[] = [
     priority: 6,
     label: "Нет обратной связи",
     condition: (p) => !p.has_public_work && p.projects_completed_last_90d >= 1,
+  },
+  {
+    // FIX 3: новый gap G13_no_community
+    // Ловит блокер no_community — частый и важный, но раньше не адресовался
+    gap: "G13_no_community",
+    priority: 6.5,
+    label: "Нет людей в теме",
+    condition: (p) =>
+      p.blockers.includes("no_community") &&
+      p.feedback_comfort !== "private",
   },
   {
     gap: "G12_scattered_attention",
@@ -132,6 +148,7 @@ export function detectGaps(profile: StructuredProfile): GapResult {
 }
 
 // Лейблы для UI
-export const GAP_LABELS: Record<GapType, string> = Object.fromEntries(
-  GAP_RULES.map((r) => [r.gap, r.label])
-) as Record<GapType, string>
+export const GAP_LABELS: Record<string, string> = {
+  ...Object.fromEntries(GAP_RULES.map((r) => [r.gap, r.label])),
+  G13_no_community: "Нет людей в теме",
+}
