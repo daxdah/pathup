@@ -84,6 +84,7 @@ function buildMockFreeReport(profile: StructuredProfile): FreeReport {
     ],
     plan_30d_locked: true,
     plan_90d_locked: true,
+    what_if_nothing_changes: "Если ничего не изменится, через 90 дней ситуация останется прежней. Те же паттерны, тот же барьер — без внешнего фидбэка не будет понятно что работает.",
 
     upgrade_prompt: getMockUpgradePrompt(profile),
   }
@@ -219,6 +220,11 @@ function buildMockFullReport(profile: StructuredProfile): FullReport {
       { title: "Show Your Work — Austin Kleon", type: "book", relevance: "Книга про то почему показывать незавершённое — это не слабость а стратегия" },
     ],
 
+    why_we_think_this: "Мы видим это потому что ты отметил конкретные паттерны в анкете.",
+    what_if_nothing_changes: "Если ничего не изменится, через 90 дней ситуация останется прежней.",
+    what_not_to_do: "Тебе сейчас не нужен ещё один курс — нужно показать то что уже есть.",
+    deliverables_30d: ["Опубликовать одну работу в любом виде", "Получить один внешний фидбэк"],
+    proof_of_progress: ["Есть хотя бы одна работа которую не стыдно показать", "Получил конкретный комментарий от человека не из семьи"],
     one_step_today: profile.one_step_today,
     report_type: "full",
   }
