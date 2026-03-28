@@ -299,14 +299,14 @@ export async function generateReport<T extends ReportType>(
     } as any)
   } catch (err) {
     console.error(`[AI] LLM call failed for ${type} report, falling back to mock:`, err)
-    return getMockReport(type, profile) as ReportResult<T>
+    return getMockReport(type as any, profile) as ReportResult<T>
   }
 
   // Validate output
   const parsed = parseReport(raw, type, profile, decision)
   if (!parsed) {
     console.error(`[AI] Validation failed for ${type} report, falling back to mock`)
-    return getMockReport(type, profile) as ReportResult<T>
+    return getMockReport(type as any, profile) as ReportResult<T>
   }
 
   // Inject system-generated IDs (don't trust LLM for these)
